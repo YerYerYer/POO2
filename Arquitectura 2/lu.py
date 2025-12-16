@@ -8,6 +8,9 @@ class Interfaz:
         self.gestionProyecto = GestionProyectoControl()
         self.gestionAsignacion = GestionAsignacionControl()
         self.gestionRegistroHorario = GestionRegistroHorario()
+        self.GestionMetodosEmpleados = GestionMetodosEmpleados()
+        self.gestionLogin = GestionLoginControl()
+        self.usuarioActual = None
     
     def menuOpcionesAdmin(self):
         system('cls')
@@ -335,10 +338,16 @@ class Interfaz:
             print(self.gestionRegistroHorario.eliminarRegistroHorarioControl(idRegistro))
             print(self.gestionRegistroHorario.asignarHorasEmpleadoControl(idRegistro, idEmpleado, fecha, horas))
 
-    def verProyectosEmp(self):
+    def verProyectosEmp(self, idEmpleado):
         system('cls')
-        proyectos = self.
-        pass
+        proyectos = self.GestionMetodosEmpleados.verProyectosControlEmp(idEmpleado)
+        if len(proyectos) != 0:
+            for obj in proyectos:
+                print(' Id Proyecto             :',obj[0])
+                print(' Fecha Asignación        :',obj[1])
+                print(' Rol en el Proyecto      :',obj[2],'\n')
+        else:
+            print('No tienes Proyectos Asignados!')
 
     def verSalarioEmp(self):
         pass
@@ -360,6 +369,58 @@ class Interfaz:
 
     def cambioMoneda(self):
         pass
+    
+    def inicioSesion(self):
+        pass
+
+    def cargaEmpleado(self):
+        pass
+    
+    def inicioSesion(self):
+        system('cls')
+        print('=== INICIO DE SESIÓN ===')
+        user = input('Usuario: ')
+        password = input('Contraseña: ') 
+        objUsuario = self.gestionLogin.loginControl(user, password)
+
+        if objUsuario:
+            self.usuarioActual = objUsuario
+            print('Bienvenido: '+objUsuario.getNombre())
+            print('Rol detectado: '+objUsuario.getRole())
+            input('Presione Enter para continuar...')
+            rol = objUsuario.getRole().lower().strip()
+            if rol == 'admin' or rol == 'administrador':
+                self.cargaAdmin()
+            elif rol == 'empleado' or rol == 'regular':
+                self.cargaEmp()
+            else:
+                print('Rol no reconocido. Contacte a soporte.')
+        else:
+            print('Usuario o contraseña incorrectos.')
+            input('Presione Enter para intentar de nuevo...')
+            self.inicioSesion()
+
+    def cargaEmp(self):
+        while True:
+            system('cls')
+            print('Bienvenido Empleado: '+self.usuarioActual.getNombre())
+            print('1. Ver mis proyectos')
+            print('2. Ver mi salario')
+            print('3. Salir / Cerrar Sesión')
+            
+            try:
+                opc = int(input("Opción: "))
+                if opc == 1:
+                    self.verProyectosEmp(self.usuarioActual.getId()) 
+                    input("Enter para continuar...")
+                elif opc == 2:
+                    # Lógica de ver salario
+                    pass 
+                elif opc == 3:
+                    self.usuario_actual = None
+                    break
+            except ValueError:
+                print('Opción no válida')
 
     def cargaAdmin(self):
             while True:
@@ -479,6 +540,9 @@ class Interfaz:
                 except ValueError:
                     print('Solo puede ingresar opciones validas')
 
-iu = Interfaz()
-iu.cargaAdmin()
-iu.cargaEmp()
+# AL FINAL DEL ARCHIVO:
+if __name__ == "__main__":
+    iu = Interfaz()
+    iu.inicioSesion() 
+    # Ya no llames a cargaAdmin() o cargaEmp() aquí abajo manualmente, 
+    # inicioSesion se encarga de dirigir.

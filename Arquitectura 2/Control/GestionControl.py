@@ -208,3 +208,58 @@ class GestionRegistroHorario:
         else:
             mensaje = 'La asignacion no existe!'
         return mensaje
+    
+class GestionMetodosEmpleados:
+    def __init__(self):
+        self.__asignacionDAO = AsignacionDAO()
+        self.__empleadosDAO = EmpleadosDAO()
+        self.__UsuarioNormalDao = UsuarioNormalDao()
+
+    def verProyectoslEmp(self, idEmpleado):
+        proyectos = self.__UsuarioNormalDao.verProyectoslEmp(idEmpleado)
+        if proyectos == None:
+            proyectos = ()
+        return proyectos
+    
+    def verSalarioUsuarioEmp(self, idEmpleado):
+        salarios = self.__UsuarioNormalDao.verSalarioUsuario(idEmpleado)
+        if salarios == None:
+            salarios = ()
+        return salarios
+
+
+class GestionLoginControl:
+    def __init__(self) -> None:
+        self.__usuarioDAO = UsuarioDAO()
+        self.__empleadoDAO = EmpleadosDAO() 
+
+    def loginControl(self, username, password):
+        datos_usuario = self.__usuarioDAO.login(username, password)
+        try:
+            if datos_usuario:
+                idUsuario = datos_usuario[0]
+                idEmpleado = datos_usuario[1]
+                rol = datos_usuario[3]
+                datosEmp = self.__empleadoDAO.buscarEmpleado(str(idEmpleado))
+                if datosEmp:
+                    objUsuario = Usuario(
+                        datosEmp[0], # id
+                        datosEmp[1], # nombre
+                        datosEmp[2], # direccion
+                        datosEmp[3], # telefono
+                        datosEmp[4], # mail
+                        datosEmp[5], # inicio contrato
+                        datosEmp[6], # salario
+                        datosEmp[7], # id departamento
+                        datosEmp[8], # termino contrato
+                        username,    # username
+                        "",          # password
+                        rol
+                    )
+                    return objUsuario
+                else:
+                    print('Usuario existe en tabla USERS pero no en EMPLEADOS')
+            else:
+                print('Credenciales incorrectas')
+        except Exception as e:
+            print('Error :',e)

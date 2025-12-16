@@ -367,10 +367,44 @@ class RegistrosDAO(DataBase):
                 msj = 'Error'+str(e)
             return msj
 
+class UsuarioNormalDao(DataBase):
+    def __init__(self):
+        super().__init__()
+
+    def verProyectoslEmp(self, idEmpleado):
+        proyectos = None
+        query = 'SELECT ID_PROYECTO, FECHA_ASIGNACION, ROL FROM ASIGNACION_PROYECTO WHERE ID_EMPLEADO = "'+idEmpleado+'"'
+        try:
+            self.getCursor().execute(query)
+            proyectos = self.getCursor().fetchall()
+        except Exception as e:
+            print('Error :',e)
+        return proyectos
+
+    def verSalarioUsuario(self, idEmpleado):
+        salario = None
+        query = 'SELECT SALARIO AS SALARIO_EN_PESOS, (SALARIO * "'+json+'") as SALARIO_EN_UF, (SALARIO * "'+json+'") as SALARIO_EN_UTM, (SALARIO * "'+json+'") as SALARIO_EN_IPV, (SALARIO * "'+json+'") as SALARIO_EN_EURO, (SALARIO * "'+json+'") as SALARIO_EN_DOLAR WHERE ID_EMPLEADO = "'+idEmpleado+'"'
+        try:
+            self.getCursor().execute(query)
+            salario = self.getCursor().fetchall()
+        except Exception as e:
+            print('Error :',e)
+        return salario
+    
 class UsuarioDAO(DataBase):
     def __init__(self) -> None:
         super().__init__()
-    
+
+    def login(self, username, password):
+        usuario = None
+        query = 'SELECT ID_USUARIO, ID_EMPLEADO, NOMBRE_USUARIO, ROL FROM USERS WHERE NOMBRE_USUARIO = "'+username+'" AND PASSWORD = SHA2("'+password+'", 256)'
+        try:
+            self.getCursor().execute(query)
+            usuario = self.getCursor().fetchone()
+        except Exception as e:
+            print('Error en login:', e)
+        return usuario
+
     def verUsuarios(self):
         usuarios = None
         query = 'SELECT ID_USUARIO, USERNAME FROM USUARIOS'
