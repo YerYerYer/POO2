@@ -372,9 +372,6 @@ class Interfaz:
     
     def inicioSesion(self):
         pass
-
-    def cargaEmpleado(self):
-        pass
     
     def inicioSesion(self):
         system('cls')
@@ -543,6 +540,4 @@ class Interfaz:
 # AL FINAL DEL ARCHIVO:
 if __name__ == "__main__":
     iu = Interfaz()
-    iu.inicioSesion() 
-    # Ya no llames a cargaAdmin() o cargaEmp() aquí abajo manualmente, 
-    # inicioSesion se encarga de dirigir.
+    iu.inicioSesion()

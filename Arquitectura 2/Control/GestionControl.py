@@ -2,6 +2,7 @@ import sys
 sys.path.append('/Users/memex/Arquitectura/Arquitectura 2/Model')
 from Dao import *
 from Dto import *
+from Model.Dao import UsuarioNormalDao
 
 class GestionEmpleadoControl:
     def __init__(self) -> None:
@@ -234,12 +235,12 @@ class GestionLoginControl:
         self.__empleadoDAO = EmpleadosDAO() 
 
     def loginControl(self, username, password):
-        datos_usuario = self.__usuarioDAO.login(username, password)
+        datosUsuario = self.__usuarioDAO.login(username, password)
         try:
-            if datos_usuario:
-                idUsuario = datos_usuario[0]
-                idEmpleado = datos_usuario[1]
-                rol = datos_usuario[3]
+            if datosUsuario:
+                idUsuario = datosUsuario[0]
+                idEmpleado = datosUsuario[1]
+                rol = datosUsuario[3]
                 datosEmp = self.__empleadoDAO.buscarEmpleado(str(idEmpleado))
                 if datosEmp:
                     objUsuario = Usuario(

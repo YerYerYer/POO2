@@ -1,3 +1,4 @@
+import hashlib
 from pymysql import *
 from Dto import *
 
@@ -19,8 +20,6 @@ class DataBase:
         return self.__conector
     def getCursor(self):
         return self.__cursor
-    
-    # DAO PARA EMPLEADOS, DEPARTAMENTOS Y PROYECTOS, CADA UNA CUENTA CON LA OPCION; AGREGAR, VER, BUSCAR, ELIMINAR Y EDITAR
 
 class EmpleadosDAO(DataBase):
     def __init__(self) -> None:
@@ -396,14 +395,18 @@ class UsuarioDAO(DataBase):
         super().__init__()
 
     def login(self, username, password):
-        usuario = None
-        query = 'SELECT ID_USUARIO, ID_EMPLEADO, NOMBRE_USUARIO, ROL FROM USERS WHERE NOMBRE_USUARIO = "'+username+'" AND PASSWORD = SHA2("'+password+'", 256)'
-        try:
-            self.getCursor().execute(query)
-            usuario = self.getCursor().fetchone()
-        except Exception as e:
-            print('Error en login:', e)
-        return usuario
+            passwordHasheada = hashlib.sha256(password.encode()).hexdigest()
+            datosUsuario = None
+            
+            query = 'SELECT ID_USUARIO, ID_EMPLEADO, NOMBRE_USUARIO, ROL FROM USERS ' \
+                    'WHERE NOMBRE_USUARIO = "'+username+'" AND PASSWORD = "'+passwordHasheada+'"'
+            
+            try:
+                self.getCursor().execute(query)
+                datosUsuario = self.getCursor().fetchone()
+            except Exception as e:
+                print('Error en login:', e)
+            return datosUsuario
 
     def verUsuarios(self):
         usuarios = None
