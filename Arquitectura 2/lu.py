@@ -376,9 +376,9 @@ class Interfaz:
     def inicioSesion(self):
         system('cls')
         print('=== INICIO DE SESIÓN ===')
-        user = input('Usuario: ')
+        username = input('Usuario: ')
         password = input('Contraseña: ') 
-        objUsuario = self.gestionLogin.loginControl(user, password)
+        objUsuario = self.gestionLogin.loginControl(username, password)
 
         if objUsuario:
             self.usuarioActual = objUsuario
@@ -411,10 +411,9 @@ class Interfaz:
                     self.verProyectosEmp(self.usuarioActual.getId()) 
                     input("Enter para continuar...")
                 elif opc == 2:
-                    # Lógica de ver salario
                     pass 
                 elif opc == 3:
-                    self.usuario_actual = None
+                    self.usuarioActual = None
                     break
             except ValueError:
                 print('Opción no válida')

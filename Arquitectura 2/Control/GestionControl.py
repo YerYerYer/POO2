@@ -3,6 +3,7 @@ sys.path.append('/Users/memex/Arquitectura/Arquitectura 2/Model')
 from Dao import *
 from Dto import *
 from Model.Dao import UsuarioNormalDao
+from Model.Dao import UsuarioDAO
 
 class GestionEmpleadoControl:
     def __init__(self) -> None:
