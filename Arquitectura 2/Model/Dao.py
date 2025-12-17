@@ -387,7 +387,7 @@ class UsuarioNormalDao(DataBase):
         cambioApi = requests.get(url)
         datosJson = cambioApi.json()
         salario = None
-        query = 'SELECT SALARIO, (SALARIO / '+str(datosJson['uf']['valor'])+') as SALARIO_EN_UF, (SALARIO / '+str(datosJson['utm']['valor'])+') as SALARIO_EN_UTM, (SALARIO / '+str(datosJson['ivp']['valor'])+') as SALARIO_EN_IVP, (SALARIO / '+str(datosJson['euro']['valor'])+') as SALARIO_EN_EURO, (SALARIO / '+str(datosJson['dolar']['valor'])+') as SALARIO_EN_DOLAR FROM EMPLEADOS WHERE ID_EMPLEADO = "'+str(idEmpleado)+'"'
+        query = 'SELECT SALARIO, ROUND((SALARIO / '+str(datosJson['uf']['valor'])+'), 2) as SALARIO_EN_UF, ROUND((SALARIO / '+str(datosJson['utm']['valor'])+'),2) as SALARIO_EN_UTM, ROUND((SALARIO / '+str(datosJson['ivp']['valor'])+'), 2) as SALARIO_EN_IVP, ROUND((SALARIO / '+str(datosJson['euro']['valor'])+'), 2) as SALARIO_EN_EURO, ROUND((SALARIO / '+str(datosJson['dolar']['valor'])+'), 2) as SALARIO_EN_DOLAR FROM EMPLEADOS WHERE ID_EMPLEADO = "'+str(idEmpleado)+'"'
         try:
             self.getCursor().execute(query)
             salario = self.getCursor().fetchall()
