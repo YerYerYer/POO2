@@ -1,6 +1,6 @@
 import hashlib
 from pymysql import *
-from Dto import *
+from Model.Dto import *
 
 class DataBase:
     def __init__(self) -> None:
@@ -310,61 +310,61 @@ class AsignacionDAO(DataBase):
     #    return empleados
     
 class RegistrosDAO(DataBase):
-        def __init__(self) -> None:
-            super().__init__()
-            
-        def verRegistrosHorarios(self):
-            registros = None
-            query = 'SELECT ID_REGISTRO, ID_EMPLEADO, FECHA, HORAS_TRABAJADAS FROM REGISTROS_HORARIOS'
-            try:
-                self.getCursor().execute(query)
-                registros = self.getCursor().fetchall()
-            except Exception as e:
-                print('Error :',e)
-            return registros
+    def __init__(self) -> None:
+        super().__init__()
         
-        def existeRegistroHorario(self, idRegistro):
-            existe = False
-            query = 'SELECT * FROM REGISTROS_HORARIOS WHERE ID_REGISTRO = "'+idRegistro+'"'
-            try:
-                self.getCursor().execute(query)
-                asignacion = self.getCursor().fetchone()
-                if asignacion != None:
-                    existe = True
-            except Exception as e:
-                print('Error', e)
-            return existe
-        
-        def agregarRegistroHorario(self, idRegistro, idEmpleado, fecha, horas):
-            msj = 'Registro horario agregado correctamente'
-            trans = 'INSERT INTO REGISTROS_HORARIOS (ID_REGISTRO, ID_EMPLEADO, FECHA, HORAS_TRABAJADAS) VALUES ("'+idRegistro+'","'+idEmpleado+'","'+fecha+'","'+str(horas)+'")'
-            try:
-                self.getCursor().execute(trans)
-                registro = self.getConector().commit()
-            except Exception as e:
-                msj = 'Error'+str(e)
-            return msj
-        
-        def buscarHorasEmpleado(self, idEmpleado):
-            registros = None
-            query = 'SELECT ID_EMPLEADO, SUM(HORAS_TRABAJADAS) AS HORAS_TOTALES FROM REGISTROS_HORARIOS ' \
-            'WHERE ID_EMPLEADO = '+str(idEmpleado)+' GROUP BY ID_EMPLEADO'
-            try:
-                self.getCursor().execute(query)
-                registros = self.getCursor().fetchall()
-            except Exception as e:
-                print('Error :',e)
-            return registros
+    def verRegistrosHorarios(self):
+        registros = None
+        query = 'SELECT ID_REGISTRO, ID_EMPLEADO, FECHA, HORAS_TRABAJADAS FROM REGISTROS_HORARIOS'
+        try:
+            self.getCursor().execute(query)
+            registros = self.getCursor().fetchall()
+        except Exception as e:
+            print('Error :',e)
+        return registros
+    
+    def existeRegistroHorario(self, idRegistro):
+        existe = False
+        query = 'SELECT * FROM REGISTROS_HORARIOS WHERE ID_REGISTRO = "'+idRegistro+'"'
+        try:
+            self.getCursor().execute(query)
+            asignacion = self.getCursor().fetchone()
+            if asignacion != None:
+                existe = True
+        except Exception as e:
+            print('Error', e)
+        return existe
+    
+    def agregarRegistroHorario(self, idRegistro, idEmpleado, fecha, horas):
+        msj = 'Registro horario agregado correctamente'
+        trans = 'INSERT INTO REGISTROS_HORARIOS (ID_REGISTRO, ID_EMPLEADO, FECHA, HORAS_TRABAJADAS) VALUES ("'+idRegistro+'","'+idEmpleado+'","'+fecha+'","'+str(horas)+'")'
+        try:
+            self.getCursor().execute(trans)
+            registro = self.getConector().commit()
+        except Exception as e:
+            msj = 'Error'+str(e)
+        return msj
+    
+    def buscarHorasEmpleado(self, idEmpleado):
+        registros = None
+        query = 'SELECT ID_EMPLEADO, SUM(HORAS_TRABAJADAS) AS HORAS_TOTALES FROM REGISTROS_HORARIOS ' \
+        'WHERE ID_EMPLEADO = '+str(idEmpleado)+' GROUP BY ID_EMPLEADO'
+        try:
+            self.getCursor().execute(query)
+            registros = self.getCursor().fetchall()
+        except Exception as e:
+            print('Error :',e)
+        return registros
 
-        def eliminarRegistroHorario(self, idRegistro):
-            msj = 'Registro eliminado correctamente'
-            query = 'DELETE FROM REGISTROS_HORARIOS WHERE ID_REGISTRO = "'+idRegistro+'"'
-            try:
-                self.getCursor().execute(query)
-                registro = self.getConector().commit()
-            except Exception as e:
-                msj = 'Error'+str(e)
-            return msj
+    def eliminarRegistroHorario(self, idRegistro):
+        msj = 'Registro eliminado correctamente'
+        query = 'DELETE FROM REGISTROS_HORARIOS WHERE ID_REGISTRO = "'+idRegistro+'"'
+        try:
+            self.getCursor().execute(query)
+            registro = self.getConector().commit()
+        except Exception as e:
+            msj = 'Error'+str(e)
+        return msj
 
 class UsuarioNormalDao(DataBase):
     def __init__(self):
@@ -382,13 +382,35 @@ class UsuarioNormalDao(DataBase):
 
     def verSalarioUsuario(self, idEmpleado):
         salario = None
-        query = 'SELECT SALARIO AS SALARIO_EN_PESOS, (SALARIO * "'+json+'") as SALARIO_EN_UF, (SALARIO * "'+json+'") as SALARIO_EN_UTM, (SALARIO * "'+json+'") as SALARIO_EN_IPV, (SALARIO * "'+json+'") as SALARIO_EN_EURO, (SALARIO * "'+json+'") as SALARIO_EN_DOLAR WHERE ID_EMPLEADO = "'+idEmpleado+'"'
+        query = 'SELECT SALARIO AS SALARIO_EN_PESOS, (SALARIO * "'+1+'") as SALARIO_EN_UF, (SALARIO * "'+1+'") as SALARIO_EN_UTM, (SALARIO * "'+1+'") as SALARIO_EN_IPV, (SALARIO * "'+1+'") as SALARIO_EN_EURO, (SALARIO * "'+1+'") as SALARIO_EN_DOLAR WHERE ID_EMPLEADO = "'+idEmpleado+'"'
         try:
             self.getCursor().execute(query)
             salario = self.getCursor().fetchall()
         except Exception as e:
             print('Error :',e)
         return salario
+    
+    def marcarHorasEmp(self, idEmpleado):
+        asignacionHoras = None
+        idRegistro = None
+        query = 'INSERT INTO REGISTROS_HORARIOS (ID_REGISTRO, ID_EMPLEADO, FECHA, HORAS_TRABAJADAS)'
+        ObjEmpleado = (idRegistro, idEmpleado, datetime.now, asignacionHoras)
+        try:
+            self.getCursor().execute(query, ObjEmpleado)
+            salario = self.getCursor().fetchall()
+        except Exception as e:
+            print('Error :',e)
+        return salario
+    
+    def verHorasEmp(self, idEmpleado):
+        registro = None
+        query = 'SELECT ID_EMPLEADO, SUM(HORAS_TRABAJADAS) AS HORAS_TOTALES FROM REGISTROS_HORARIOS WHERE ID_EMPLEADO = '+str(idEmpleado)+' GROUP BY ID_EMPLEADO'
+        try:
+            self.getCursor().execute(query)
+            registro = self.getCursor().fetchall()
+        except Exception as e:
+            print('Error :',e)
+        return registro
     
 class UsuarioDAO(DataBase):
     def __init__(self) -> None:
@@ -408,18 +430,15 @@ class UsuarioDAO(DataBase):
                 print('Error en login:', e)
             return datosUsuario
 
-    def verUsuarios(self):
-        usuarios = None
-        query = 'SELECT ID_USUARIO, USERNAME FROM USUARIOS'
-        try:
-            self.getCursor().execute(query)
-            usuarios = self.getCursor().fetchall()
-        except Exception as e:
-            print('Error :',e)
-        return usuarios
-    
-    def existeUsuario(self, id):
-        pass
+#    def verUsuarios(self):
+#        usuarios = None
+#        query = 'SELECT ID_USUARIO, USERNAME FROM USUARIOS'
+#        try:
+#            self.getCursor().execute(query)
+#            usuarios = self.getCursor().fetchall()
+#        except Exception as e:
+#            print('Error :',e)
+#        return usuarios
 
 #Pruebas de conexion
 #objDB = DataBase()

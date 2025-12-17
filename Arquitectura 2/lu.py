@@ -1,5 +1,6 @@
 from os import system
 from Control.GestionControl import *
+from datetime import datetime
 
 class Interfaz:
     def __init__(self) -> None:
@@ -340,7 +341,7 @@ class Interfaz:
 
     def verProyectosEmp(self, idEmpleado):
         system('cls')
-        proyectos = self.GestionMetodosEmpleados.verProyectosControlEmp(idEmpleado)
+        proyectos = self.GestionMetodosEmpleados.verProyectoslEmpControl(str(idEmpleado))
         if len(proyectos) != 0:
             for obj in proyectos:
                 print(' Id Proyecto             :',obj[0])
@@ -349,30 +350,23 @@ class Interfaz:
         else:
             print('No tienes Proyectos Asignados!')
 
-    def verSalarioEmp(self):
-        pass
-
-    def HorasEmp(self):
-        pass
-
-    def marcarHorasEmp(self):
-        pass
-
-    def verHorasEmp(self):
-        pass
-
-    def inicioSesion(self):
-        pass
-
-    def cargaEmp(self):
-        pass
-
-    def cambioMoneda(self):
+    def verSalarioEmp(self, idEmpleado):
         pass
     
-    def inicioSesion(self):
-        pass
-    
+    def marcarHorasEmp(self, idEmpleado):
+        system('cls')
+        idRegistro = int(input('Ingrese su ID de registro: '))
+        fecha = datetime.now()
+        horas = input('Ingrese las horas trabajadas: ')
+        print(self.gestionRegistroHorario.asignarHorasEmpleadoControl(str(idRegistro), str(idEmpleado), str(fecha), str(horas)))
+        
+    def verHorasEmp(self, idEmpleado):
+        system('cls')
+        registros = self.GestionMetodosEmpleados.verHorasEmpControl(str(idEmpleado))
+        if registros:
+            for obj in registros:
+                print(' Horas Totales           :',obj[1],'\n')
+
     def inicioSesion(self):
         system('cls')
         print('=== INICIO DE SESIÓN ===')
@@ -403,16 +397,24 @@ class Interfaz:
             print('Bienvenido Empleado: '+self.usuarioActual.getNombre())
             print('1. Ver mis proyectos')
             print('2. Ver mi salario')
-            print('3. Salir / Cerrar Sesión')
-            
+            print('3. Marcar horas trabajadas')
+            print('4. Ver horas trabajadas')
+            print('5. Salir / Cerrar Sesión')
             try:
                 opc = int(input("Opción: "))
                 if opc == 1:
                     self.verProyectosEmp(self.usuarioActual.getId()) 
                     input("Enter para continuar...")
                 elif opc == 2:
-                    pass 
+                    self.verSalarioEmp(self.usuarioActual.getId())
+                    input("Enter para continuar...")
                 elif opc == 3:
+                    self.marcarHorasEmp(self.usuarioActual.getId())
+                    input("Enter para continuar...")
+                elif opc == 4:
+                    self.verHorasEmp(self.usuarioActual.getId())
+                    input("Enter para continuar...")
+                elif opc == 5:
                     self.usuarioActual = None
                     break
             except ValueError:
@@ -426,7 +428,6 @@ class Interfaz:
                     if opcion == 1:
                         print('Gestión de Empleados')
                         self.menuEmpleadoAdmin()
-                        sigue = True
                         opcion = int(input('Ingrese una opción: '))
                         if opcion == 1:
                             self.verEmpleadosAdmin()

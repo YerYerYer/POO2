@@ -1,9 +1,7 @@
 import sys
-sys.path.append('/Users/memex/Arquitectura/Arquitectura 2/Model')
-from Dao import *
-from Dto import *
-from Model.Dao import UsuarioNormalDao
-from Model.Dao import UsuarioDAO
+sys.path.append('Users/memex/POO2/Arquitectura 2/Model')
+from Model.Dto import *
+from Model.Dao import *
 
 class GestionEmpleadoControl:
     def __init__(self) -> None:
@@ -213,22 +211,35 @@ class GestionRegistroHorario:
     
 class GestionMetodosEmpleados:
     def __init__(self):
-        self.__asignacionDAO = AsignacionDAO()
+        self.__registrosDAO = RegistrosDAO
         self.__empleadosDAO = EmpleadosDAO()
         self.__UsuarioNormalDao = UsuarioNormalDao()
 
-    def verProyectoslEmp(self, idEmpleado):
+    def verProyectoslEmpControl(self, idEmpleado):
         proyectos = self.__UsuarioNormalDao.verProyectoslEmp(idEmpleado)
         if proyectos == None:
             proyectos = ()
         return proyectos
     
-    def verSalarioUsuarioEmp(self, idEmpleado):
+    def verSalarioUsuarioEmpControl(self, idEmpleado):
         salarios = self.__UsuarioNormalDao.verSalarioUsuario(idEmpleado)
         if salarios == None:
             salarios = ()
         return salarios
+    
+    def marcarHorasEmpControl(self, idEmpleado):
+        if self.__empleadosDAO.existeEmpleado != True:
+            if self.__registrosDAO.existeRegistroHorario != False:
+                mensaje = self.__UsuarioNormalDao.marcarHorasEmp(idEmpleado)
+                return mensaje
+            else:
+                print('El ID de registro ya existe')
+        else:
+            print('El ID de empleado no existe')
 
+    def verHorasEmpControl(self, idEmpleado):
+        registro = self.__UsuarioNormalDao.verHorasEmp(idEmpleado)
+        return registro
 
 class GestionLoginControl:
     def __init__(self) -> None:

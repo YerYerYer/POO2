@@ -21,7 +21,7 @@ drop table if exists USERS;
 /*==============================================================*/
 create table ASIGNACION_PROYECTO
 (
-   ID_ASIGNACION        int not null,
+   ID_ASIGNACION        int not null AUTO_INCREMENT,
    ID_PROYECTO          int not null,
    ID_EMPLEADO          int not null,
    FECHA_ASIGNACION     date,
@@ -221,9 +221,9 @@ VALUES
 /*==============================================================*/
 create table DEPARTAMENTOS
 (
-   ID_DEPARTAMENTO      int not null,
+   ID_DEPARTAMENTO      int not null AUTO_INCREMENT,
    NOMBRE_DEPARTAMENTO  char(100) not null,
-   D_DESCRIPCION        char(255),
+   D_DESCRIPCION        char(255) not null,
    GERENTE              char(30),
    FECHA_CREACION       date,
    primary key (ID_DEPARTAMENTO)
@@ -269,10 +269,10 @@ VALUES
 /*==============================================================*/
 create table EMPLEADOS
 (
-   ID_EMPLEADO          int not null,
-   NOMBRE               char(25),
-   DIRECCION            char(25),
-   TELEFONO             int,
+   ID_EMPLEADO          int not null AUTO_INCREMENT,
+   NOMBRE               char(25) not null,
+   DIRECCION            char(25) not null,
+   TELEFONO             int not null,
    MAIL                 char(40) not null,
    SALARIO              int,
    ID_DEPARTAMENTO      int,
@@ -407,10 +407,10 @@ VALUES
 /*==============================================================*/
 create table PROYECTOS
 (
-   ID_PROYECTO          int not null,
-   NOMBRE_PROYECTO      char(100),
+   ID_PROYECTO          int not null AUTO_INCREMENT,
+   NOMBRE_PROYECTO      char(100) not null,
    FECHA_INICIO_P       date,
-   P_DESCRIPCION        char(255),
+   P_DESCRIPCION        char(255) not null,
    P_FECHA_TERMINO      date,
    primary key (ID_PROYECTO)
 );
@@ -445,10 +445,10 @@ VALUES
 /*==============================================================*/
 create table REGISTROS_HORARIOS
 (
-   ID_REGISTRO          int not null,
-   ID_EMPLEADO          int,
-   FECHA                date,
-   HORAS_TRABAJADAS     decimal,
+   ID_REGISTRO          int not null AUTO_INCREMENT,
+   ID_EMPLEADO          int not null,
+   FECHA                date not null,
+   HORAS_TRABAJADAS     decimal not null,
    primary key (ID_REGISTRO)
 );
 
