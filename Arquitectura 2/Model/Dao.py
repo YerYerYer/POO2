@@ -1,4 +1,6 @@
 import hashlib
+import requests
+import json
 from pymysql import *
 from Model.Dto import *
 
@@ -381,8 +383,11 @@ class UsuarioNormalDao(DataBase):
         return proyectos
 
     def verSalarioUsuario(self, idEmpleado):
+        url = 'https://mindicador.cl/api'
+        cambioApi = requests.get(url)
+        datosJson = cambioApi.json()
         salario = None
-        query = 'SELECT SALARIO AS SALARIO_EN_PESOS, (SALARIO * "'+1+'") as SALARIO_EN_UF, (SALARIO * "'+1+'") as SALARIO_EN_UTM, (SALARIO * "'+1+'") as SALARIO_EN_IPV, (SALARIO * "'+1+'") as SALARIO_EN_EURO, (SALARIO * "'+1+'") as SALARIO_EN_DOLAR WHERE ID_EMPLEADO = "'+idEmpleado+'"'
+        query = 'SELECT SALARIO, (SALARIO / '+str(datosJson['uf']['valor'])+') as SALARIO_EN_UF, (SALARIO / '+str(datosJson['utm']['valor'])+') as SALARIO_EN_UTM, (SALARIO / '+str(datosJson['ivp']['valor'])+') as SALARIO_EN_IVP, (SALARIO / '+str(datosJson['euro']['valor'])+') as SALARIO_EN_EURO, (SALARIO / '+str(datosJson['dolar']['valor'])+') as SALARIO_EN_DOLAR FROM EMPLEADOS WHERE ID_EMPLEADO = "'+str(idEmpleado)+'"'
         try:
             self.getCursor().execute(query)
             salario = self.getCursor().fetchall()
@@ -430,6 +435,9 @@ class UsuarioDAO(DataBase):
                 print('Error en login:', e)
             return datosUsuario
 
+class MetodosJsonDAO(DataBase):
+    def __init__(self) -> None:
+        super().__init__()
 #    def verUsuarios(self):
 #        usuarios = None
 #        query = 'SELECT ID_USUARIO, USERNAME FROM USUARIOS'

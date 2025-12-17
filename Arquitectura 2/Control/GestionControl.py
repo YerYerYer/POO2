@@ -222,10 +222,10 @@ class GestionMetodosEmpleados:
         return proyectos
     
     def verSalarioUsuarioEmpControl(self, idEmpleado):
-        salarios = self.__UsuarioNormalDao.verSalarioUsuario(idEmpleado)
-        if salarios == None:
-            salarios = ()
-        return salarios
+        salario = self.__UsuarioNormalDao.verSalarioUsuario(idEmpleado)
+        if salario == None:
+            salario = ()
+        return salario
     
     def marcarHorasEmpControl(self, idEmpleado):
         if self.__empleadosDAO.existeEmpleado != True:

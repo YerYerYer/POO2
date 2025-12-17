@@ -351,7 +351,16 @@ class Interfaz:
             print('No tienes Proyectos Asignados!')
 
     def verSalarioEmp(self, idEmpleado):
-        pass
+        system('cls')
+        salario = self.GestionMetodosEmpleados.verSalarioUsuarioEmpControl(str(idEmpleado))
+        if len(salario) != 0:
+            for obj in salario:
+                print('Salario en Pesos :',obj[0])
+                print('Salario en UF    :',obj[1])
+                print('Salario en UTM   :',obj[2])
+                print('Salario en IVP   :',obj[3])
+                print('Salario en Euro  :',obj[4])
+                print('Salario en Dolar :',obj[5],'\n')
     
     def marcarHorasEmp(self, idEmpleado):
         system('cls')
