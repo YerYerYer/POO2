@@ -546,7 +546,6 @@ class Interfaz:
                 except ValueError:
                     print('Solo puede ingresar opciones validas')
 
-# AL FINAL DEL ARCHIVO:
 if __name__ == "__main__":
     iu = Interfaz()
     iu.inicioSesion()

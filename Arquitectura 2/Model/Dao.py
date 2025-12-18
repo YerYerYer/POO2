@@ -240,18 +240,6 @@ class AsignacionDAO(DataBase):
             print('Error :',e)
         return asignaciones
     
-    #def existeAsignacion(self, idEmpleado, idProyecto):
-    #    existe = False
-    #    query = 'SELECT * FROM ASIGNACION_PROYECTO WHERE ID_PROYECTO = "'+idProyecto+'" AND ID_EMPLEADO = "'+idEmpleado+'"'
-    #    try:
-    #        self.getCursor().execute(query)
-    #        asignacion = self.getCursor().fetchone()
-    #        if asignacion != None:
-    #            existe = True
-    #    except Exception as e:
-    #        print('Error', e)
-    #    return existe
-    
     def existeAsignacionId(self, idAsignacion):
         existe = False
         query = 'SELECT * FROM ASIGNACION_PROYECTO WHERE ID_ASIGNACION = "'+idAsignacion+'"'
@@ -297,19 +285,6 @@ class AsignacionDAO(DataBase):
         except Exception as e:
             print('Error :',e)
         return asignaciones
-    
-    #def verEmpleadosPorProyecto(self, idProyecto):
-    #    empleados = None
-    #    query = 'SELECT AP.ID_EMPLEADO, E.NOMBRE, AP.FECHA_ASIGNACION, AP.ROL '\
-    #            'FROM ASIGNACION_PROYECTO AP ' \
-    #            'JOIN EMPLEADOS E ON AP.ID_EMPLEADO = E.ID_EMPLEADO ' \
-    #            'WHERE AP.ID_PROYECTO = "'+idProyecto+'"'
-    #    try:
-    #        self.getCursor().execute(query)
-    #        empleados = self.getCursor().fetchall()
-    #    except Exception as e:
-    #        print('Error :',e)
-    #    return empleados
     
 class RegistrosDAO(DataBase):
     def __init__(self) -> None:
@@ -435,18 +410,7 @@ class UsuarioDAO(DataBase):
                 print('Error en login:', e)
             return datosUsuario
 
-class MetodosJsonDAO(DataBase):
-    def __init__(self) -> None:
-        super().__init__()
-#    def verUsuarios(self):
-#        usuarios = None
-#        query = 'SELECT ID_USUARIO, USERNAME FROM USUARIOS'
-#        try:
-#            self.getCursor().execute(query)
-#            usuarios = self.getCursor().fetchall()
-#        except Exception as e:
-#            print('Error :',e)
-#        return usuarios
+
 
 #Pruebas de conexion
 #objDB = DataBase()
