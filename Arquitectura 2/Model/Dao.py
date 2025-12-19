@@ -240,6 +240,18 @@ class AsignacionDAO(DataBase):
             print('Error :',e)
         return asignaciones
     
+    #def existeAsignacion(self, idEmpleado, idProyecto):
+    #    existe = False
+    #    query = 'SELECT * FROM ASIGNACION_PROYECTO WHERE ID_PROYECTO = "'+idProyecto+'" AND ID_EMPLEADO = "'+idEmpleado+'"'
+    #    try:
+    #        self.getCursor().execute(query)
+    #        asignacion = self.getCursor().fetchone()
+    #        if asignacion != None:
+    #            existe = True
+    #    except Exception as e:
+    #        print('Error', e)
+    #    return existe
+    
     def existeAsignacionId(self, idAsignacion):
         existe = False
         query = 'SELECT * FROM ASIGNACION_PROYECTO WHERE ID_ASIGNACION = "'+idAsignacion+'"'
@@ -286,6 +298,19 @@ class AsignacionDAO(DataBase):
             print('Error :',e)
         return asignaciones
     
+    #def verEmpleadosPorProyecto(self, idProyecto):
+    #    empleados = None
+    #    query = 'SELECT AP.ID_EMPLEADO, E.NOMBRE, AP.FECHA_ASIGNACION, AP.ROL '\
+    #            'FROM ASIGNACION_PROYECTO AP ' \
+    #            'JOIN EMPLEADOS E ON AP.ID_EMPLEADO = E.ID_EMPLEADO ' \
+    #            'WHERE AP.ID_PROYECTO = "'+idProyecto+'"'
+    #    try:
+    #        self.getCursor().execute(query)
+    #        empleados = self.getCursor().fetchall()
+    #    except Exception as e:
+    #        print('Error :',e)
+    #    return empleados
+    
 class RegistrosDAO(DataBase):
     def __init__(self) -> None:
         super().__init__()
@@ -312,9 +337,9 @@ class RegistrosDAO(DataBase):
             print('Error', e)
         return existe
     
-    def agregarRegistroHorario(self, idRegistro, idEmpleado, fecha, horas):
+    def agregarRegistroHorario(self,idEmpleado, fecha, horas):
         msj = 'Registro horario agregado correctamente'
-        trans = 'INSERT INTO REGISTROS_HORARIOS (ID_REGISTRO, ID_EMPLEADO, FECHA, HORAS_TRABAJADAS) VALUES ("'+idRegistro+'","'+idEmpleado+'","'+fecha+'","'+str(horas)+'")'
+        trans = 'INSERT INTO REGISTROS_HORARIOS (ID_EMPLEADO, FECHA, HORAS_TRABAJADAS) VALUES ("'+idEmpleado+'","'+fecha+'","'+str(horas)+'")'
         try:
             self.getCursor().execute(trans)
             registro = self.getConector().commit()
@@ -372,12 +397,11 @@ class UsuarioNormalDao(DataBase):
     
     def marcarHorasEmp(self, idEmpleado):
         asignacionHoras = None
-        idRegistro = None
-        query = 'INSERT INTO REGISTROS_HORARIOS (ID_REGISTRO, ID_EMPLEADO, FECHA, HORAS_TRABAJADAS)'
-        ObjEmpleado = (idRegistro, idEmpleado, datetime.now, asignacionHoras)
+        query = 'INSERT INTO REGISTROS_HORARIOS (ID_EMPLEADO, FECHA, HORAS_TRABAJADAS)'
+        ObjEmpleado = (idEmpleado, datetime.now, asignacionHoras)
         try:
             self.getCursor().execute(query, ObjEmpleado)
-            salario = self.getCursor().fetchall()
+            salario = self.getConector().commit()
         except Exception as e:
             print('Error :',e)
         return salario
@@ -410,6 +434,58 @@ class UsuarioDAO(DataBase):
                 print('Error en login:', e)
             return datosUsuario
 
+class MetodosJsonDAO(DataBase):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def existeIndicador(self, codigo):
+        existe = False
+        query = 'SELECT * FROM INDICADOR WHERE IN_CODIGO = "'+str(codigo)+'"'
+        try:
+            self.getCursor().execute(query)
+            indi = self.getCursor().fetchone()
+            if indi != None:
+                existe = True
+        except Exception as e:
+            print('Error ',e)
+        return existe
+    
+    def verMedidaCambio(self, datosJson):
+        msj = 'Datos agregados correctamente'
+        try:
+            query1 = 'INSERT INTO INDICADOR (IN_CODIGO, IN_VERSION, IN_AUTOR, IN_NOMBRE, IN_UNIDAD_MEDIDA) VALUES (%s, %s, %s, %s, %s)'
+            valores = (
+                datosJson.get('codigo'),
+                datosJson.get('version'),
+                datosJson.get('autor'),
+                datosJson.get('nombre'),
+                datosJson.get('unidad_medida')
+            )
+            self.getCursor().execute(query1, valores)
+            for obj in datosJson.get('serie', []):
+                query2 = 'INSERT INTO SERIE (IN_CODIGO, SE_FECHA, SE_VALOR) VALUES (%s, %s, %s)'
+                valores2 = (datosJson.get('codigo'), obj.get('fecha'), obj.get('valor'))
+                self.getCursor().execute(query2, valores2)
+            self.getConector().commit()
+            msj = 'Datos agregados correctamente'
+        except Exception as e:
+            msj = 'Error:'+str(e)
+        return msj
+
+    def agregarIndicadoresDB(self, datosApi):
+        return self.verMedidaCambio(datosApi)
+    
+    def despliegueApi(self, tipoInd):
+        url = 'https://findic.cl/api/'+tipoInd
+        despliegueApi = requests.get(url)
+        datosApi = despliegueApi.json()
+        query = 'INSERT INTO INDICADOR (IN_CODIGO, IN_VERSION, IN_AUTOR, IN_NOMBRE, IN_UNIDAD_MEDIDA) VALUES ('+datosApi['codigo']+', '+datosApi['version']+', '+datosApi['autor']+', '+datosApi['nombre']+', '+datosApi['unidad_medida']+')'
+        try:
+            self.getCursor().execute(query)
+            uf = self.getConector().commit()
+        except Exception as e:
+            print('Error :',e)
+        return uf
 
 
 #Pruebas de conexion

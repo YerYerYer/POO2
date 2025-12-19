@@ -16,6 +16,10 @@ drop table if exists REGISTROS_HORARIOS;
 
 drop table if exists USERS;
 
+drop table if exists INDICADOR;
+
+drop table if exists SERIE;
+
 /*==============================================================*/
 /* Table: ASIGNACION_PROYECTO                                   */
 /*==============================================================*/
@@ -673,7 +677,7 @@ VALUES
 
 CREATE TABLE USERS
 (
-   ID_USUARIO        int not null,
+   ID_USUARIO        int not null AUTO_INCREMENT,
    ID_EMPLEADO       int,
    NOMBRE_USUARIO    char(50),
    PASSWORD          char(64),
@@ -796,6 +800,29 @@ VALUES
 (99, 1099, 'ELara', SHA2('ELara123', 256), 'EMPLEADO'),
 (100, 1100, 'PGuerra', SHA2('PGuerra123', 256), 'EMPLEADO');
 
+create table INDICADOR
+(
+   IN_CODIGO                      char(15)                       not null,
+   IN_VERSION                     char(8),
+   IN_AUTOR                       char(12),
+   IN_NOMBRE                      char(30),
+   IN_UNIDAD_MEDIDA               char(30),
+   primary key (IN_CODIGO)
+);
+
+create table SERIE
+(
+   IN_CODIGO                      char(15)                       not null,
+   SE_FECHA                       char(10)                       not null,
+   SE_VALOR                       decimal,
+   primary key (IN_CODIGO, SE_FECHA)
+);
+
+create index TIENE_FK on SERIE
+(
+   IN_CODIGO
+);
+
 alter table ASIGNACION_PROYECTO add constraint FK_RELATIONSHIP_5 foreign key (ID_EMPLEADO)
       references EMPLEADOS (ID_EMPLEADO) on delete restrict on update restrict;
 
@@ -807,3 +834,6 @@ alter table EMPLEADOS add constraint FK_RELATIONSHIP_1 foreign key (ID_DEPARTAME
 
 alter table REGISTROS_HORARIOS add constraint FK_RELATIONSHIP_4 foreign key (ID_EMPLEADO)
       references EMPLEADOS (ID_EMPLEADO) on delete restrict on update restrict;
+
+alter table SERIE add constraint FK_TIENE foreign key (IN_CODIGO)
+      references INDICADOR (IN_CODIGO) on delete restrict on update restrict;

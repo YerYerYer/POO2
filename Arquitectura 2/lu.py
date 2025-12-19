@@ -12,6 +12,7 @@ class Interfaz:
         self.GestionMetodosEmpleados = GestionMetodosEmpleados()
         self.gestionLogin = GestionLoginControl()
         self.usuarioActual = None
+        self.GestionMetodosJson = GestionMetodosJson()
     
     def menuOpcionesAdmin(self):
         system('cls')
@@ -21,7 +22,8 @@ class Interfaz:
         print('  3. Gestión de Proyectos')
         print('  4. Gestión de Asignaciones de Proyectos')
         print('  5. Gestión de Registros Horarios')
-        print('  6. Salir')
+        print('  6. Desplegar y almacenar indicador')
+        print('  7. Salir')
 
     def menuEmpleadoAdmin(self):
         system('cls')
@@ -364,10 +366,9 @@ class Interfaz:
     
     def marcarHorasEmp(self, idEmpleado):
         system('cls')
-        idRegistro = int(input('Ingrese su ID de registro: '))
         fecha = datetime.now()
         horas = input('Ingrese las horas trabajadas: ')
-        print(self.gestionRegistroHorario.asignarHorasEmpleadoControl(str(idRegistro), str(idEmpleado), str(fecha), str(horas)))
+        print(self.gestionRegistroHorario.asignarHorasEmpleadoControl(str(idEmpleado), str(fecha), str(horas)))
         
     def verHorasEmp(self, idEmpleado):
         system('cls')
@@ -375,6 +376,25 @@ class Interfaz:
         if registros:
             for obj in registros:
                 print(' Horas Totales           :',obj[1],'\n')
+
+    def verMedidaCambio(self):
+        system('cls')
+        tipoInd = input('Ingrese el Tipo de Indicador : ')
+        datosApi = self.GestionMetodosJson.verMedidaCambioControl(tipoInd)
+        self.despliegue(datosApi)
+        espera = input('Presione Enter para continuar...')
+
+    def despliegue(self, datosApi):
+        print('Versión:',datosApi['version'])
+        print('Autor:',datosApi['autor'])
+        print('Codigo:',datosApi['codigo'])
+        print('Nombre:',datosApi['nombre'])
+        print('Unidad de medida:',datosApi['unidad_medida'])
+        i=0
+        for obj in datosApi['serie']:
+            print('Valor:   ', datosApi['serie'][i]['valor'], '     ---      Fecha:   ',datosApi['serie'][i]['fecha'])
+            i+=1
+
 
     def inicioSesion(self):
         system('cls')
@@ -449,7 +469,7 @@ class Interfaz:
                         elif opcion == 5:
                             self.editarEmpleadoAdmin()
                         elif opcion == 6:
-                            self.cargaAdmin()
+                            break
                         else:
                             print('La opcion ingresada no es valida')
                         espera = input('Presione Enter para continuar...')
@@ -541,11 +561,14 @@ class Interfaz:
                         espera = input('Presione Enter para continuar...')
 
                     elif opcion == 6:
-                        break 
+                        self.verMedidaCambio()
+                    elif opcion == 7:
+                        break
 
                 except ValueError:
                     print('Solo puede ingresar opciones validas')
 
+# AL FINAL DEL ARCHIVO:
 if __name__ == "__main__":
     iu = Interfaz()
     iu.inicioSesion()

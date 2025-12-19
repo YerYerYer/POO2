@@ -1,4 +1,6 @@
 import sys
+import requests
+import json
 sys.path.append('Users/memex/POO2/Arquitectura 2/Model')
 from Model.Dto import *
 from Model.Dao import *
@@ -187,13 +189,10 @@ class GestionRegistroHorario:
             registros = ()
         return registros
     
-    def asignarHorasEmpleadoControl(self, idRegistro, idEmpleado, fecha, horas):
+    def asignarHorasEmpleadoControl(self, idEmpleado, fecha, horas):
             mensaje = ''
             if self.__empleadoDAO.existeEmpleado(idEmpleado) != False:
-                if self.__registrosDAO.existeRegistroHorario(idRegistro) != True:
-                    mensaje = self.__registrosDAO.agregarRegistroHorario(idRegistro, idEmpleado, fecha, horas)
-                else:
-                    mensaje = 'El Id del registro ya existe!'
+                mensaje = self.__registrosDAO.agregarRegistroHorario(idEmpleado, fecha, horas)
             else:
                 mensaje = 'El Id del empleado no existe!'
             return mensaje
@@ -211,7 +210,7 @@ class GestionRegistroHorario:
     
 class GestionMetodosEmpleados:
     def __init__(self):
-        self.__registrosDAO = RegistrosDAO
+        self.__registrosDAO = RegistrosDAO()
         self.__empleadosDAO = EmpleadosDAO()
         self.__UsuarioNormalDao = UsuarioNormalDao()
 
@@ -229,11 +228,8 @@ class GestionMetodosEmpleados:
     
     def marcarHorasEmpControl(self, idEmpleado):
         if self.__empleadosDAO.existeEmpleado != True:
-            if self.__registrosDAO.existeRegistroHorario != False:
-                mensaje = self.__UsuarioNormalDao.marcarHorasEmp(idEmpleado)
-                return mensaje
-            else:
-                print('El ID de registro ya existe')
+            mensaje = self.__UsuarioNormalDao.marcarHorasEmp(idEmpleado)
+            return mensaje
         else:
             print('El ID de empleado no existe')
 
@@ -276,3 +272,29 @@ class GestionLoginControl:
                 print('Credenciales incorrectas')
         except Exception as e:
             print('Error :',e)
+
+class GestionMetodosJson:
+    def __init__(self) -> None:
+        self.__MetodosJsonDAO = MetodosJsonDAO()
+
+    def verMedidaCambioControl(self, medidas, ObjJson):
+        if ObjJson != False:
+            self.__MetodosJsonDAO.verMedidaCambio(medidas, ObjJson)
+        else:
+            print('Ingrese un Valor Valido')
+
+    def verMedidaCambioControl(self, tipoInd):
+        url = 'https://mindicador.cl/api/'+tipoInd
+        try:
+            respuesta = requests.get(url)
+            if respuesta.status_code == 200:
+                datosApi = respuesta.json()
+                try:
+                    if self.__MetodosJsonDAO.existeIndicador(datosApi.get('codigo')) == False:
+                        resultado = self.__MetodosJsonDAO.agregarIndicadoresDB(datosApi)
+                        print(resultado)
+                except Exception:
+                    pass
+                return datosApi
+        except Exception as e:
+            print('Error: ',e)

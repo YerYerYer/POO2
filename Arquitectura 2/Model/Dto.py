@@ -1,7 +1,7 @@
 from datetime import datetime
 
 class Departamento:
-    def __init__(self, id, name, desc, gerente):
+    def __init__(self, id = None, name = None, desc = None, gerente = None):
         self.__ID_DEPARTAMENTO = id
         self.__NOMBRE_DEPARTAMENTO = name
         self.__D_DESCRIPCION = desc
@@ -29,8 +29,8 @@ class Departamento:
         self.__GERENTE = gerente
 
 class Empleado:
-    def __init__(self, id, name, direccion, telefono, mail, f_inicio_c,
-                  salario, id_departamento, f_termino_c):
+    def __init__(self, id = None, name = None, direccion = None, telefono = None, mail = None, f_inicio_c = None,
+                  salario = None, id_departamento = None, f_termino_c = None):
         self.__ID_EMPLEADO = id
         self.__NOMBRE = name 
         self.__DIRECCION = direccion
@@ -80,7 +80,7 @@ class Empleado:
         self.__F_TERMINO_C = f_termino_c
     
 class AsignacionProyecto:
-    def __init__(self, id_emp, id_proy, id_asig, f_asig, rol):
+    def __init__(self, id_emp = None, id_proy = None, id_asig = None, f_asig = None, rol = None):
         self.__ID_EMPLEADO = id_emp
         self.__ID_PROYECTO = id_proy
         self.__ID_ASIGNACION = id_asig
@@ -110,7 +110,7 @@ class AsignacionProyecto:
         self.__ROL = rol
 
 class Proyecto:
-    def __init__(self, id, name, desc, f_inicio, f_termino):
+    def __init__(self, id = None, name = None, desc = None, f_inicio = None, f_termino = None):
         self.__ID_PROYECTO = id
         self.__NOMBRE_PROYECTO = name
         self.__P_DESCRIPCION = desc
@@ -140,7 +140,7 @@ class Proyecto:
         self.__FECHA_TERMINO_P = f_termino
 
 class RegistroHoras:
-    def __init__(self, id_reg, id_emp, fecha, horas):
+    def __init__(self, id_reg = None, id_emp = None, fecha = None, horas = None):
         self.__ID_REGISTRO = id_reg
         self.__ID_EMPLEADO = id_emp
         self.__FECHA = fecha
@@ -165,7 +165,7 @@ class RegistroHoras:
         self.__HORAS_TRABAJADAS = horas
 
 class Usuario(Empleado):
-    def __init__(self, id, name, direccion, telefono, mail, f_inicio_c, salario, id_departamento, f_termino_c, username, password, role):
+    def __init__(self, id = None, name = None, direccion = None, telefono = None, mail = None, f_inicio_c = None, salario = None, id_departamento = None, f_termino_c = None, username = None, password = None, role = None):
         super().__init__(id, name, direccion, telefono, mail, f_inicio_c, salario, id_departamento, f_termino_c)
 
         self.__USERNAME = username
